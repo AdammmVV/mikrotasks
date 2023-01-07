@@ -29,6 +29,18 @@ export const NewComponent = (props: NewComponentPropsType) => {
                     )
                 })}
             </ul>
+            <table>
+                <tbody>
+                {props.data.topCars.map((t, index) => {
+                    return (
+                        <tr key={index}>
+                            <td>{t.manufacturer}</td>
+                            <td>{t.model}</td>
+                        </tr>
+                    )
+                })}
+                </tbody>
+            </table>
         </>
     )
 }
