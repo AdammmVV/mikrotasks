@@ -7,11 +7,10 @@ import {Footer} from "./site/Footer";
 function App() {
     return (
         <>
-            <Header/>
-            <Body/>
-            <Footer/>
+            <Header titleForHeader={'NEW HEADER'}/>
+            <Body titleForBody={'NEW BODY'}/>
+            <Footer titleForFooter={'NEW FOOTER'}/>
         </>
-
     )
 }
 
