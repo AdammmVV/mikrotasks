@@ -4,6 +4,7 @@ import {Header} from "./site/Header";
 import {Body} from "./site/Body";
 import {Footer} from "./site/Footer";
 import {NewComponent} from "./site/NewComponent";
+import {Button} from "./site/Button";
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
             <Body titleForBody={'NEW BODY'}/>
             <Footer titleForFooter={'NEW FOOTER'}/>
             <NewComponent data={data}/>
+            <Button />
         </>
     )
 }
