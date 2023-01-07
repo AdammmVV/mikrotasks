@@ -5,6 +5,7 @@ import {Body} from "./site/Body";
 import {Footer} from "./site/Footer";
 import {NewComponent} from "./site/NewComponent";
 import {Button} from "./site/Button";
+import {isNumber} from "util";
 
 function App() {
 
@@ -29,13 +30,18 @@ function App() {
         ]
     })
 
+    const Button1Foo = (subscriber: string = 'I`m stupid button', age: number = 0, address: string = '') => {
+        console.log(subscriber, age, address)
+    }
     return (
         <>
             <Header titleForHeader={'NEW HEADER'}/>
             <Body titleForBody={'NEW BODY'}/>
             <Footer titleForFooter={'NEW FOOTER'}/>
             <NewComponent data={data}/>
-            <Button />
+            <Button name={'MyYouTubeChanel-1'} callBack={() => Button1Foo('I`m Vasya', 21, 'I`m from Minsk')}/>
+            <Button name={'MyYouTubeChanel-2'} callBack={() => Button1Foo('I`m Ivan')}/>
+            <Button name={'Stupid Button'} callBack={() => Button1Foo()}/>
         </>
     )
 }
