@@ -25,12 +25,21 @@ export const Money = (props: MoneyPropsType) => {
                 })}
             </ul>
             <div style={{marginLeft: '30px'}}>
-                <button onClick={() => props.FilterMoney('all')}>all</button>
-                <button onClick={() => props.FilterMoney("dollars")}>dollars</button>
-                <button onClick={() => props.FilterMoney('rubles')}>rubles</button>
+                <Button FilterMoney={()=>props.FilterMoney('all')} titleButton={'all'} />
+                <Button FilterMoney={()=>props.FilterMoney("dollars")} titleButton={'dollars'} />
+                <Button FilterMoney={()=>props.FilterMoney("rubles")} titleButton={'rubles'} />
             </div>
 
         </>
 
     )
+}
+
+type ButtonPropsType = {
+    FilterMoney: () => void,
+    titleButton: string
+}
+
+export const Button = (props: ButtonPropsType) => {
+    return <button onClick={props.FilterMoney}>{props.titleButton}</button>
 }
