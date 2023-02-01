@@ -1,100 +1,98 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Money} from "./site/Money";
-import {Header} from "./site/Header";
-import {Body} from "./site/Body";
-import {Footer} from "./site/Footer";
-import {NewComponent} from "./site/NewComponent";
-import {Button} from "./site/Button";
-import {AddMessage} from "./components/AddMessage";
+import {TaskType, Todolist} from './Todolist';
+import {v1} from "uuid";
 
-export type FilterMoneyType = 'all' | 'dollars' | 'rubles';
+export type FilterValuesType = "all" | "active" | "completed";
+
+export type TodoListsType = {
+    id: string
+    title: string
+    filter: FilterValuesType
+}
+
+export type TasksTodoListType = {
+    [todoListId: string]: TaskType[]
+}
 
 function App() {
 
-    const [data, setStudents] = useState({
-        topCars: [
-            {manufacturer:'BMW', model:'m5cs'},
-            {manufacturer:'Mercedes', model:'e63s'},
-            {manufacturer:'Audi', model:'rs6'}
+    let todolistID1 = v1();
+    let todolistID2 = v1();
+
+    let [todoLists, setTodoLists] = useState<Array<TodoListsType>>([
+        {id: todolistID1, title: 'What to learn', filter: 'all'},
+        {id: todolistID2, title: 'What to buy', filter: 'all'},
+    ])
+
+    let [tasks, setTasks] = useState<TasksTodoListType>({
+        [todolistID1]: [
+            {id: v1(), title: "HTML&CSS", isDone: true},
+            {id: v1(), title: "JS", isDone: true},
+            {id: v1(), title: "ReactJS", isDone: false},
+            {id: v1(), title: "Rest API", isDone: false},
+            {id: v1(), title: "GraphQL", isDone: false},
         ],
-        students: [
-            {id: 1, name: "James", age: 8},
-            {id: 2, name: "Robert", age: 18},
-            {id: 3, name: "John", age: 28},
-            {id: 4, name: "Michael", age: 38},
-            {id: 5, name: "William", age: 48},
-            {id: 6, name: "David", age: 58},
-            {id: 7, name: "Richard", age: 68},
-            {id: 8, name: "Joseph", age: 78},
-            {id: 9, name: "Thomas", age: 88},
-            {id: 10, name: "Charles", age: 98},
-            {id: 11, name: "Christopher", age: 100},
+        [todolistID2]: [
+            {id: v1(), title: "Whisky", isDone: true},
+            {id: v1(), title: "Cola", isDone: true},
+            {id: v1(), title: "Ace", isDone: false},
+            {id: v1(), title: "smock", isDone: false},
+            {id: v1(), title: "Whisky", isDone: false},
         ]
+    });
+
+    function changeFilter(value: FilterValuesType, todoListId: string) {
+        const updateTodoList = todoLists.map(tl => tl.id === todoListId ? {...tl, filter: value} : tl)
+        setTodoLists([...updateTodoList])
+    }
+
+    function removeTask(id: string, todoListId: string) {
+        const updatedTasks = tasks[todoListId].filter(t => t.id !== id)
+        setTasks({...tasks, [todoListId]: updatedTasks})
+
+    }
+
+    function addTask(title: string, todoListId: string) {
+        const task = {id: v1(), title: title, isDone: false}
+        setTasks({...tasks, [todoListId]: [task, ...tasks[todoListId]]})
+    }
+
+    function changeStatus(taskId: string, isDone: boolean, todoListId: string) {
+        const updatedTasks = tasks[todoListId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)
+        setTasks({...tasks, [todoListId]: updatedTasks})
+    }
+
+
+    const mapTodoList = todoLists.map(todo => {
+        let tasksForTodolist = tasks[todo.id];
+
+        if (todo.filter === "active") {
+            tasksForTodolist = tasks[todo.id].filter(t => !t.isDone);
+        }
+        if (todo.filter === "completed") {
+            tasksForTodolist = tasks[todo.id].filter(t => t.isDone);
+        }
+        return (
+            <Todolist
+                key={todo.id}
+                title={todo.title}
+                tasks={tasksForTodolist}
+                removeTask={removeTask}
+                changeFilter={changeFilter}
+                addTask={addTask}
+                changeTaskStatus={changeStatus}
+                filter={todo.filter}
+                todoListId={todo.id}
+            />
+        )
     })
 
-    let [money, setMoney] = useState([
-        {banknote: 'dollar', nominal: 100, number: ' a1234567890'},
-        {banknote: 'dollar', nominal: 50, number: ' z1234567890'},
-        {banknote: 'ruble', nominal: 100, number: ' w1234567890'},
-        {banknote: 'dollar', nominal: 100, number: ' e1234567890'},
-        {banknote: 'dollar', nominal: 50, number: ' c1234567890'},
-        {banknote: 'ruble', nominal: 100, number: ' r1234567890'},
-        {banknote: 'dollar', nominal: 50, number: ' x1234567890'},
-        {banknote: 'ruble', nominal: 50, number: ' v1234567890'},
-    ])
-    let [a, setA] = useState(1);
-
-    let [filter, setFilter] = useState<FilterMoneyType>('all')
-
-    const Button1Foo = (subscriber: string = 'I`m stupid button', age: number = 0, address: string = '') => {
-        console.log(subscriber, age, address)
-    }
-
-
-
-    const onClickHandler = () => {
-        setA(++a);
-        console.log(a)
-    }
-    const resetsList = () => {
-        setA(a = 0);
-        console.log(a)
-    }
-
-
-    let currentMoney = money
-
-    const FilterMoney = (filter: FilterMoneyType) => {
-        return setFilter(filter);
-    }
-    if(filter === 'rubles') {
-        currentMoney = money.filter(m => {
-            return m.banknote === 'ruble'
-        })
-    }
-    if(filter === 'dollars') {
-        currentMoney = money.filter(m => {
-            return m.banknote === 'dollar'
-        })
-    }
-
     return (
-        <>
-            <Header titleForHeader={'NEW HEADER'}/>
-            <Body titleForBody={'NEW BODY'}/>
-            <Footer titleForFooter={'NEW FOOTER'}/>
-            <NewComponent data={data}/>
-            <Button name={'MyYouTubeChanel-1'} callBack={() => Button1Foo('I`m Vasya', 21, 'I`m from Minsk')}/>
-            <Button name={'MyYouTubeChanel-2'} callBack={() => Button1Foo('I`m Ivan')}/>
-            <Button name={'Stupid Button'} callBack={() => Button1Foo()}/>
-            <h2>{a}</h2>
-            <button onClick={onClickHandler}>Counter</button>
-            <button onClick={resetsList}>0</button>
-            <Money money={currentMoney} FilterMoney={FilterMoney}/>
-            <AddMessage/>
-        </>
-    )
+        <div className="App">
+            {mapTodoList}
+        </div>
+    );
 }
 
 export default App;
